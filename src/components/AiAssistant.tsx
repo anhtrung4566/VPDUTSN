@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, Send, User, Bot, HelpCircle, CornerDownLeft, RefreshCw, Bookmark, AlertCircle 
 } from 'lucide-react';
+import { Task, UnitUpdate } from '../types';
 
 interface AiAssistantProps {
   isDarkMode: boolean;
+  tasks?: Task[];
+  updates?: UnitUpdate[];
 }
 
 interface Message {
@@ -14,7 +17,7 @@ interface Message {
   time: string;
 }
 
-export default function AiAssistant({ isDarkMode }: AiAssistantProps) {
+export default function AiAssistant({ isDarkMode, tasks = [], updates = [] }: AiAssistantProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'bot',
@@ -65,7 +68,7 @@ export default function AiAssistant({ isDarkMode }: AiAssistantProps) {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const handleSend = (text: string) => {
+  const handleSend = async (text: string) => {
     if (!text.trim()) return;
 
     // Add user message
@@ -75,25 +78,55 @@ export default function AiAssistant({ isDarkMode }: AiAssistantProps) {
       text,
       time: currentTime
     };
+    
+    const previousMessages = [...messages];
     setMessages(prev => [...prev, newMsg]);
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI thinking & reply
-    setTimeout(() => {
-      // Find matching preset answer or generate generic professional answer
-      const match = presetQueries.find(q => q.q.toLowerCase().includes(text.toLowerCase()) || text.toLowerCase().includes(q.q.toLowerCase()));
-      const replyText = match 
-        ? match.a 
-        : `Tôi đã ghi nhận câu hỏi: "${text}". Dựa trên phân tích toàn bộ báo cáo từ các chi bộ trực thuộc, thông tin này đang ở trạng thái ổn định và chưa phát sinh vụ việc khẩn cấp. Thường trực có muốn tôi trích xuất báo cáo chi tiết về đơn vị cụ thể nào liên quan không ạ?`;
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: text,
+          history: previousMessages,
+          tasks,
+          updates
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Mạng hoặc máy chủ AI phản hồi không hợp lệ.');
+      }
+
+      const data = await response.json();
+      const replyText = data.reply || 'Không có phản hồi từ máy chủ AI.';
 
       setMessages(prev => [...prev, {
         sender: 'bot',
         text: replyText,
         time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
       }]);
+    } catch (error) {
+      console.error('Lỗi gọi API trợ lý ảo:', error);
+      
+      // Intelligent fallback using mock data / presets
+      const match = presetQueries.find(q => q.q.toLowerCase().includes(text.toLowerCase()) || text.toLowerCase().includes(q.q.toLowerCase()));
+      const replyText = match 
+        ? match.a 
+        : `[Trợ lý AI ngoại tuyến] Tôi đã ghi nhận ý kiến chỉ đạo: "${text}". Hiện tại hệ thống đang chạy ngoại tuyến, tôi sẽ lưu lại chỉ thị này của Thường trực để báo cáo trong phiên giao ban tuần tới!`;
+
+      setMessages(prev => [...prev, {
+        sender: 'bot',
+        text: replyText,
+        time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
   return (

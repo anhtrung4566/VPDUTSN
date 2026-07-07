@@ -558,7 +558,7 @@ export default function App() {
         
         {/* Section 7 */}
         {userRole === 'admin' ? (
-          <AiAssistant isDarkMode={isDarkMode} />
+          <AiAssistant isDarkMode={isDarkMode} tasks={tasks} updates={updates} />
         ) : (
           <LockedSection onUnlock={() => setShowLoginModal(true)} title="Trợ lý ảo Thường trực" />
         )}
