@@ -245,6 +245,10 @@ export default function App() {
     setUpdates(prev => [newUpdate, ...prev]);
   };
 
+  const handleUpdateUpdate = (updatedUpdate: UnitUpdate) => {
+    setUpdates(prev => prev.map(u => u.id === updatedUpdate.id ? updatedUpdate : u));
+  };
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -532,6 +536,7 @@ export default function App() {
             tasks={tasks} 
             onAddTask={handleAddTask} 
             onUpdateTask={handleUpdateTask} 
+            onUpdateUpdate={handleUpdateUpdate}
             isDarkMode={isDarkMode} 
           />
         ) : (

@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building2, CheckCircle2, AlertTriangle, MessageSquareCode, ShieldAlert, Clock, 
@@ -17,10 +17,11 @@ interface DashboardViewProps {
   tasks: Task[];
   onAddTask: (task: Task) => void;
   onUpdateTask: (task: Task) => void;
+  onUpdateUpdate: (update: UnitUpdate) => void;
   isDarkMode: boolean;
 }
 
-export default function DashboardView({ updates, tasks, onAddTask, onUpdateTask, isDarkMode }: DashboardViewProps) {
+export default function DashboardView({ updates, tasks, onAddTask, onUpdateTask, onUpdateUpdate, isDarkMode }: DashboardViewProps) {
   const [activeChart, setActiveChart] = useState<'day' | 'week' | 'field' | 'trend'>('field');
   const [selectedAlertLevel, setSelectedAlertLevel] = useState<string | null>(null);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
@@ -39,7 +40,21 @@ export default function DashboardView({ updates, tasks, onAddTask, onUpdateTask,
   const [priorityFilter, setPriorityFilter] = useState<string>('All');
   const [selectedUpdate, setSelectedUpdate] = useState<UnitUpdate | null>(null);
   const [aiSummarizingId, setAiSummarizingId] = useState<string | null>(null);
-  const [aiSummaries, setAiSummaries] = useState<Record<string, { overview: string; points: string[] }>>({});
+  const [aiSummaries, setAiSummaries] = useState<Record<string, { overview: string; points: string[] }>>(() => {
+    const stored = localStorage.getItem('aiSummaries');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error('Error parsing aiSummaries from localStorage', e);
+      }
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem('aiSummaries', JSON.stringify(aiSummaries));
+  }, [aiSummaries]);
 
   const handleTriggerAiSummary = (updateId: string, update: UnitUpdate) => {
     if (aiSummaries[updateId] || aiSummarizingId === updateId) return;
@@ -1078,6 +1093,11 @@ export default function DashboardView({ updates, tasks, onAddTask, onUpdateTask,
                 <button
                   type="button"
                   onClick={() => {
+                    const approvedUpdate = {
+                      ...selectedUpdate,
+                      isReviewedByStanding: true
+                    };
+                    onUpdateUpdate(approvedUpdate);
                     alert(`Đã phê duyệt báo cáo của đơn vị ${selectedUpdate.unitName} và lưu vào biên niên sử chỉ đạo.`);
                     setSelectedUpdate(null);
                   }}

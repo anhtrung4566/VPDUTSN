@@ -32,8 +32,8 @@ export default function UpdateForm({ onAddUpdate, isDarkMode }: UpdateFormProps)
   const [keywords, setKeywords] = useState<string[]>(['Số hóa hồ sơ', 'Cải cách hành chính', 'Đất đai']);
   const [newKeyword, setNewKeyword] = useState('');
   const [deadline, setDeadline] = useState('2026-07-15');
-  const [needsCooperation, setNeedsCooperation] = useState(true);
-  const [cooperationUnit, setCooperationUnit] = useState('Văn phòng UBND Phường');
+  const [needsCooperation, setNeedsCooperation] = useState(false);
+  const [cooperationUnit, setCooperationUnit] = useState('');
 
   // File Upload State
   const [dragActive, setDragActive] = useState(false);
@@ -484,16 +484,13 @@ export default function UpdateForm({ onAddUpdate, isDarkMode }: UpdateFormProps)
                   </button>
                 </div>
                 {needsCooperation && (
-                  <select
+                  <input
+                    type="text"
                     value={cooperationUnit}
                     onChange={(e) => setCooperationUnit(e.target.value)}
-                    className="w-full text-xs p-2 rounded-lg border border-neutral-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-800 dark:text-zinc-100 focus:outline-none"
-                  >
-                    <option value="Văn phòng UBND Phường">Văn phòng UBND Phường</option>
-                    <option value="Công an Phường">Công an Phường</option>
-                    <option value="Ban Chỉ huy Quân sự Phường">Chỉ huy Quân sự Phường</option>
-                    <option value="Đội Quản lý Trật tự Đô thị">Quản lý Đô thị Phường</option>
-                  </select>
+                    placeholder="Nhập tên đơn vị phối hợp (để trống hoặc tự điền)..."
+                    className="w-full text-xs p-2.5 rounded-lg border border-neutral-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-800 dark:text-zinc-100 focus:outline-none focus:border-gold-500"
+                  />
                 )}
               </div>
 
