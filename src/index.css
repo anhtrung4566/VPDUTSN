@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Premium Gold Theme */
+  --color-gold-50: #fdfaf3;
+  --color-gold-100: #f9f1db;
+  --color-gold-200: #f1e1b3;
+  --color-gold-300: #e5cb82;
+  --color-gold-400: #d8b152;
+  --color-gold-500: #ca942f;
+  --color-gold-600: #ab7521;
+  --color-gold-700: #89561b;
+  --color-gold-800: #70441a;
+  --color-gold-900: #5d3718;
+
+  /* Premium Crimson/Deep Red Theme */
+  --color-crimson-50: #fef2f2;
+  --color-crimson-100: #fee2e2;
+  --color-crimson-200: #fecaca;
+  --color-crimson-300: #fca5a5;
+  --color-crimson-400: #f87171;
+  --color-crimson-500: #ef4444;
+  --color-crimson-600: #dc2626;
+  --color-crimson-700: #b91c1c;
+  --color-crimson-800: #991b1b;
+  --color-crimson-900: #7f1d1d;
+  --color-crimson-950: #4c0d0d;
+
+  /* UI Animation Duration */
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@layer base {
+  body {
+    @apply font-sans transition-colors duration-300 antialiased;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold-500/20 rounded-full hover:bg-gold-500/40 transition-colors;
+}
+
+/* Gold foil radial gradient background */
+.gold-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(202, 148, 47, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.crimson-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(127, 29, 29, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+/* Luxury card shadow and border */
+.luxury-card {
+  @apply bg-white dark:bg-[#121826]/95 border border-gold-500/25 dark:border-gold-500/15 rounded-2xl shadow-sm hover:shadow-lg hover:border-gold-500/45 dark:hover:border-gold-500/30 transition-all duration-300;
+}
+
+.luxury-card-crimson {
+  @apply bg-crimson-50/50 dark:bg-[#1a0d10]/95 border border-crimson-500/25 dark:border-crimson-500/30 rounded-2xl shadow-sm hover:border-crimson-500/50 dark:hover:border-crimson-500/40 transition-all duration-300;
+}

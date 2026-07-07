@@ -1,0 +1,6 @@
+{
+  "name": "Hệ thống Tổng hợp Thông tin Điều hành Thông minh",
+  "description": "AI Smart Dashboard - Văn phòng Đảng ủy Phường. Hệ thống hỗ trợ tổng hợp thông tin, phân tích dữ liệu bằng AI và theo dõi chỉ đạo điều hành.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
